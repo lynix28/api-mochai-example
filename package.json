@@ -4,7 +4,8 @@
   "description": "API automation test example with Mocha JS, Supertest, and Chai",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./api --recursive --reporter mochawesome --reporter-options reportDir=reports/ --timeout 30000"
+    "test": "mocha ./api --recursive --reporter mochawesome --reporter-options reportDir=reports/ --timeout 30000",
+    "sanity": "npm run test -- --grep @Positive"
   },
   "author": "lynix",
   "license": "ISC",
