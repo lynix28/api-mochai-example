@@ -5,22 +5,31 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  say-hello:
+  test:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
-      - image: cimg/base:stable
+      - image: node:latest
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
+      - run: mkdir reports
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          name: "Install Dependencies"
+          command: "npm install"
+      - run:
+          name: "Run Tests"
+          command: "npm run test"
+      - run:
+          name: "Wrapping Test Result"
+          command: "tar -cvf artifact.tar reports/"
+      - store_artifacts:
+          path: artifact.tar
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
+  api-testing-workflow:
     jobs:
-      - say-hello
+      - test
