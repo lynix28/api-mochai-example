@@ -23,7 +23,7 @@ jobs:
           command: "npm run test"
       - run:
           name: "Wrapping Test Result"
-          command: "zip -r artifact.zip reports/"
+          command: "tar -cvf artifact.tar reports/"
       - store_artifacts:
           path: artifact.tar
 
