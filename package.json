@@ -4,8 +4,9 @@
   "description": "API automation test example with Mocha JS, Supertest, and Chai",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./api --recursive --reporter mochawesome --reporter-options reportDir=reports/ --timeout 30000",
-    "sanity": "npm run test -- --grep @Positive"
+    "test": "nyc mocha ./api --recursive --reporter mochawesome --reporter-options reportDir=reports/ --timeout 30000",
+    "sanity": "npm run test -- --grep @Positive",
+    "coverage": "nyc report --reporter=lcov"
   },
   "author": "lynix",
   "license": "ISC",
@@ -15,5 +16,8 @@
     "mocha": "^9.2.2",
     "mochawesome": "^7.1.3",
     "supertest": "^6.2.2"
+  },
+  "devDependencies": {
+    "nyc": "^15.1.0"
   }
 }

@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  codecov: codecov/codecov@1.0.2
 jobs:
   Build-and-Test:
     docker:
@@ -19,9 +17,13 @@ jobs:
           command: "tar -cvf artifact.tar reports/"
       - store_artifacts:
           path: artifact.tar
-      - codecov/upload:
-          file: cover
-          token: ${CODECOV_TOKEN}
+      - run:
+          name: "Upload Code Coverage Result"
+          command: |
+            npm run coverage
+            curl -Os https://uploader.codecov.io/latest/linux/codecov 
+            chmod +x codecov 
+            ./codecov --token=${CODECOV_TOKEN}
 
 workflows:
   API-Testing-Workflow:
