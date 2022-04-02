@@ -21,8 +21,11 @@ jobs:
       - run:
           name: "Run Tests"
           command: "npm run test"
+      - run:
+          name: "Wrapping Test Result"
+          command: "tar -cvzf artifact.tar reports/"
       - store_artifacts:
-          path: reports/
+          path: artifact.tar
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
