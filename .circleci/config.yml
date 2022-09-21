@@ -11,10 +11,10 @@ jobs:
       - run:
           name: "Prepare Test"
           command: |
-            mv -r ./api /app/
-            mv -r ./connector /app/
-            mv -r ./helpers /app/
-            mv -r ./testcases /app/
+            mv ./api /app/
+            mv ./connector /app/
+            mv ./helpers /app/
+            mv ./testcases /app/
             cd /app/
             npm install nyc --dev
             npm set-script test "nyc mocha ./api --recursive --reporter mochawesome --reporter-options reportDir=reports/ --timeout 30000"
