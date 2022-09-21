@@ -9,6 +9,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Install cURL"
+          command: apk --no-cache add curl
+      - run:
           name: "Prepare Test"
           command: |
             mv ./api /app/
