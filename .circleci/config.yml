@@ -8,10 +8,6 @@ jobs:
           password: $PASSWORD
     steps:
       - checkout
-      # - run: mkdir reports
-      # - run:
-      #     name: "Install Dependencies"
-      #     command: "npm install"
       - run:
           name: "Prepare Test"
           command: |
@@ -19,6 +15,10 @@ jobs:
             cp -r ./connector /app/
             cp -r ./helpers /app/
             cp -r ./testcases /app/
+            cd /app/
+            npm install nyc --dev
+            npm set-script test "nyc mocha ./api --recursive --reporter mochawesome --reporter-options reportDir=reports/ --timeout 30000"
+            npm set-script coverage "nyc report --reporter=lcov"
       - run:
           name: "Run Tests"
           command: |
@@ -29,13 +29,13 @@ jobs:
           command: "tar -cvf artifact.tar /app/reports/"
       - store_artifacts:
           path: artifact.tar
-      # - run:
-      #     name: "Upload Code Coverage Result"
-      #     command: |
-      #       npm run coverage
-      #       curl -Os https://uploader.codecov.io/latest/linux/codecov 
-      #       chmod +x codecov 
-      #       ./codecov --token=${CODECOV_TOKEN}
+      - run:
+          name: "Upload Code Coverage Result"
+          command: |
+            npm run coverage
+            curl -Os https://uploader.codecov.io/latest/linux/codecov 
+            chmod +x codecov 
+            ./codecov --token=${CODECOV_TOKEN}
 
 workflows:
   API-Testing-Workflow:
