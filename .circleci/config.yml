@@ -39,7 +39,7 @@ jobs:
             npm run coverage
             curl -Os https://uploader.codecov.io/latest/linux/codecov 
             chmod +x codecov 
-            ./codecov --token=${CODECOV_TOKEN}
+            ./codecov -R /app/coverage -C $CIRCLE_SHA1 -r $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 
 workflows:
   API-Testing-Workflow:
