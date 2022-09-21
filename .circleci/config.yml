@@ -26,7 +26,7 @@ jobs:
             npm run test
       - run:
           name: "Wrapping Test Result"
-          command: "tar -cvf artifact.tar reports/"
+          command: "tar -cvf artifact.tar /app/reports/"
       - store_artifacts:
           path: artifact.tar
       # - run:
