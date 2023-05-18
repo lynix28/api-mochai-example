@@ -19,3 +19,18 @@ API automation test example project
         - `npm run test`
     - Run test by Tag
         - `npm run -- --grep "@Positive"`
+
+- Run With Docker
+    - Build Docker image with `Dockerfile`
+        - `docker build -t "ImageName" .` 
+    - Run Docker container
+        - `docker run --name "ContainerName" -itd ImageName:Tag`
+    - Copy test project to `/app/` directory with docker copy command
+        - `docker cp api/ ContainerName@/app/`
+        - `docker cp connector/ ContainerName@/app/`
+        - `docker cp helpers/ ContainerName@/app/`
+        - `docker cp testcases/ ContainerName@/app/`
+    - Access the Docker Container
+        - `docker exec -it ContainerName /bin/bash`
+    - Run test file inside docker container
+        - `npm run test`
