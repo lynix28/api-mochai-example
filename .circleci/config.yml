@@ -2,28 +2,44 @@ version: 2.1
 jobs:
   Build-and-Test:
     docker:
-      - image: node:latest
+      - image: pridecontrol/mocha-api:v1
+        auth:
+          username: $USERNAME
+          password: $PASSWORD
     steps:
       - checkout
-      - run: mkdir reports
       - run:
-          name: "Install Dependencies"
-          command: "npm install"
+          name: "Install cURL"
+          command: apk --no-cache add curl
+      - run:
+          name: "Prepare Test"
+          command: |
+            mv ./api /app/
+            mv ./connector /app/
+            mv ./helpers /app/
+            mv ./testcases /app/
+            cd /app/
+            npm install nyc --dev
+            npm set-script test "nyc mocha ./api --recursive --reporter mochawesome --reporter-options reportDir=reports/ --timeout 30000"
+            npm set-script coverage "nyc report --reporter=lcov"
       - run:
           name: "Run Tests"
-          command: "npm run test"
+          command: |
+            cd /app/
+            npm run test
       - run:
           name: "Wrapping Test Result"
-          command: "tar -cvf artifact.tar reports/"
+          command: "tar -cvf artifact.tar /app/reports/"
       - store_artifacts:
           path: artifact.tar
       - run:
           name: "Upload Code Coverage Result"
           command: |
+            cd /app/
             npm run coverage
             curl -Os https://uploader.codecov.io/latest/linux/codecov 
             chmod +x codecov 
-            ./codecov --token=${CODECOV_TOKEN}
+            ./codecov -R /app/ -C $CIRCLE_SHA1 -r $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 
 workflows:
   API-Testing-Workflow:
