@@ -30,6 +30,7 @@ jobs:
       - run:
           name: "Wrapping Test Result"
           command: "tar -cvf artifact.tar /app/reports/"
+          when: always
       - store_artifacts:
           path: artifact.tar
       - run:
