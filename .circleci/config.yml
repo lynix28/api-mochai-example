@@ -14,6 +14,7 @@ jobs:
       - run:
           name: "Setup Environment Variable"
           command: |
+            cd /app/
             npm install dotenv
             echo "BUILD=$CIRCLE_BUILD_NUM" >> .env
             echo "REPOSITORY_URL=$CIRCLE_REPOSITORY_URL" >> .env
