@@ -12,21 +12,43 @@ jobs:
           name: "Install cURL"
           command: apk --no-cache add curl
       - run:
+          name: "Setup Environment Variable"
+          command: |
+            npm install dotenv
+            echo "BUILD=$CIRCLE_BUILD_NUM" >> .env
+            echo "REPOSITORY_URL=$CIRCLE_REPOSITORY_URL" >> .env
+            echo "BUILD_URL=$CIRCLE_BUILD_URL" >> .env
+            echo "BRANCH=$CIRCLE_BRANCH" >> .env
+            echo "DISCORD_WEBHOOK=$DISCORD_WEBHOOK" >> .env
+      - run:
           name: "Prepare Test"
           command: |
             mv ./api /app/
             mv ./connector /app/
             mv ./helpers /app/
             mv ./testcases /app/
+            mv ./discord-notification.js /app/
             cd /app/
             npm install nyc --dev
             npm set-script test "nyc mocha ./api --recursive --reporter mochawesome --reporter-options reportDir=reports/ --timeout 30000"
             npm set-script coverage "nyc report --reporter=lcov"
       - run:
+          name: "Send Notification - Start Testing"
+          command: |
+            cd /app/
+            npm install @penseapp/discord-notification
+            npm install run-func
+            npx run-func discord-notification.js test "start"
+      - run:
           name: "Run Tests"
           command: |
             cd /app/
             npm run test
+      - run:
+          name: "Send Notification - Stop Testing"
+          command: |
+            cd /app/
+            npx run-func discord-notification.js test "stop"
       - run:
           name: "Wrapping Test Result"
           command: "tar -cvf artifact.tar /app/reports/"
@@ -41,6 +63,7 @@ jobs:
             curl -Os https://uploader.codecov.io/latest/linux/codecov 
             chmod +x codecov 
             ./codecov -R /app/ -C $CIRCLE_SHA1 -r $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          when: always
 
 workflows:
   API-Testing-Workflow:
